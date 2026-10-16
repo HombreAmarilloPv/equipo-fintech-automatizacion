@@ -32,7 +32,7 @@ export class TiendaPage {
   // ---------- Catálogo ----------
   /** Abre la tienda. */
   async abrir(): Promise<void> {
-    throw new Error('TODO: abrir');
+    this.page.goto("/");
   }
 
   /** La tarjeta de un producto del catálogo. */

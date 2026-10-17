@@ -14,7 +14,7 @@ import { test, expect } from '@playwright/test';
 const CORREOS_VALIDOS = [
   { correo: 'juan@correo.com', bug:""},
   { correo: 'ana_gomez@gmail.com', bug:""},
-  { correo: 'ana.gomez@gmail.com', bug:"LBH_"},
+  { correo: 'ana.gomez@gmail.com', bug:"LBH_57"},
   { correo: 'ana-gomez@gmail.com', bug:"LBH-57"},
   { correo: 'ana+tienda@gmail.com', bug:"LBH-57"},
   {correo: 'ana@universidad.edu.co', bug:"LBH-58"}
@@ -123,7 +123,7 @@ test.describe('US-15 · Ingresar un correo electrónico válido', () => {
     test(`CA1-CA3: el correo ${correo} válido se acepta`, async ({ page }) => {
       test.fail(
         bug !== "",
-        "LBH-54 · El sistema no deshabilita el botón 'Ir a pagar' y continúa con el proceso.",
+        `${bug} · El correo ingresado impide continuar y muestra un mensaje de error.`,
       );
 
       await page.goto("/");

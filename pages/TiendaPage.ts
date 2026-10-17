@@ -32,68 +32,111 @@ export class TiendaPage {
   // ---------- Catálogo ----------
   /** Abre la tienda. */
   async abrir(): Promise<void> {
-    this.page.goto("/");
+    await this.page.goto("/");
   }
 
   /** La tarjeta de un producto del catálogo. */
   tarjeta(_producto: string): Locator {
-    throw new Error('TODO: tarjeta');
+    return this.page.locator(".rounded-lg").
+      filter({
+        has: this.page.getByRole("heading", {
+          name: _producto,
+          level: 3,
+        })
+      });
   }
 
   /** Escribe la cantidad en la tarjeta del producto y presiona "Agregar". */
   async agregar(_producto: string, _cantidad = 1): Promise<void> {
-    throw new Error('TODO: agregar');
+    const tarjetas = this.tarjeta(_producto);
+    await tarjetas.getByRole("spinbutton").fill(`${_cantidad}`);
+    await tarjetas.getByRole("button", { name: "Agregar" }).click();
+  }
+
+  async aumentar(_producto: string): Promise<void> {
+    await this.carrito
+      .getByRole("button", { name: `Aumentar cantidad de ${_producto}` })
+      .click();
+  }
+
+  async disminuir(_producto: string): Promise<void> {
+    await this.carrito
+      .getByRole("button", { name: `Disminuir cantidad de ${_producto}` })
+      .click();
+  }
+
+  async eliminar(_producto: string): Promise<void> {
+    await this.carrito
+      .getByRole("button", { name: `Eliminar ${_producto}` })
+      .click();
   }
 
   // ---------- Carrito ----------
   /** La línea del carrito de un producto. */
   linea(_producto: string): Locator {
-    throw new Error('TODO: linea');
+    return this.carrito.getByRole("listitem")
+      .filter({ hasText: _producto });
   }
 
   /** El número de unidades que muestra el carrito para un producto. */
   cantidad(_producto: string): Locator {
-    throw new Error('TODO: cantidad');
+    const linea = this.linea(_producto);
+    return linea.locator("span");
   }
 
   /** Escribe el código y presiona "Aplicar". */
   async aplicarCodigo(_codigo: string): Promise<void> {
-    throw new Error('TODO: aplicarCodigo');
+    await this.carrito.getByPlaceholder("Código de descuento").fill(_codigo);
+    await this.carrito.getByRole("button", { name: "Aplicar" }).click();
   }
 
   /** Valor de una fila del resumen: 'Subtotal', 'Descuento', 'IVA' o 'Total'. */
   total(_fila: 'Subtotal' | 'Descuento' | 'IVA' | 'Total'): Locator {
-    throw new Error('TODO: total');
+    return this.carrito.locator(`dt:has-text("${_fila}") + dd`)
+  }
+
+  totalText(_fila: 'Subtotal' | 'Descuento' | 'IVA' | 'Total'): Locator {
+    return this.carrito.locator(`dt:has-text("${_fila}")`)
   }
 
   /** Presiona "Ir a pagar". */
   async irAPagar(): Promise<void> {
-    throw new Error('TODO: irAPagar');
+    await this.carrito.getByRole('button', { name: "Ir a pagar" }).click();
   }
+
 
   // ---------- Checkout y confirmación ----------
   /** Un campo del formulario de envío, por el texto de su etiqueta. (Recuerden: getByLabel no funciona aquí.) */
   campo(_etiqueta: 'Nombre completo' | 'Correo electrónico' | 'Dirección de entrega'): Locator {
-    throw new Error('TODO: campo');
+    return this.page.locator(`p:text-is('${_etiqueta}')`);
   }
 
   /** Llena el formulario con los datos que reciba. */
   async llenarDatos(_datos: { nombre?: string; correo?: string; direccion?: string }): Promise<void> {
-    throw new Error('TODO: llenarDatos');
+    await this.page.locator('label:text-is("Nombre completo") + input').fill(_datos.nombre!);
+    await this.page.locator('label:text-is("Dirección de entrega") + input').fill(_datos.direccion!);
+    await this.page.locator('label:text-is("Correo electrónico") + input').fill(_datos.correo!);
   }
 
   /** Presiona "Confirmar pedido". */
   async confirmar(): Promise<void> {
-    throw new Error('TODO: confirmar');
+    await this.page.getByRole('button', { name: "Confirmar pedido" }).click();
   }
 
   /** Lee el número de pedido de la pantalla de confirmación (ej. "1001"). */
   async numeroDePedido(): Promise<string> {
-    throw new Error('TODO: numeroDePedido');
+    return (await this.page.getByText(/Número de pedido:/).textContent())!;
+  }
+
+  async devolverse(): Promise<void> {
+    await this.page.getByRole("button", { name: "Volver a la tienda" }).click();
   }
 
   /** Atajo: compra completa de un producto con datos válidos, hasta ver "¡Pedido confirmado!". */
-  async comprar(_producto: string): Promise<void> {
-    throw new Error('TODO: comprar (combina agregar + irAPagar + llenarDatos + confirmar)');
+  async comprar(_producto: string, _cantidad = 1, _datos: { nombre?: string; correo?: string; direccion?: string }): Promise<void> {
+    await this.agregar(_producto, _cantidad);
+    await this.irAPagar();
+    await this.llenarDatos(_datos);
+    await this.confirmar();
   }
 }

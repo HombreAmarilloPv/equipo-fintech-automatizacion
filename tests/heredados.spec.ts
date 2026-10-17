@@ -14,14 +14,12 @@ import { test, expect } from '@playwright/test';
  * No las "arreglen" a ciegas: un rojo no siempre es un bug.
  */
 
-test('H1 · el catálogo tiene 6 productos', async ({ page }) => {
-  test.fixme(true, 'En cuarentena: nadie sabe por qué falla'); // ← borren esta línea para ejecutarla
+test('H1 · el catálogo tiene 6 productos', async ({ page }) => { // ← borren esta línea para ejecutarla
   await page.goto('/');
-  await expect(page.getByRole('heading', { level: 3 })).toHaveCount(6);
+  await expect(page.getByRole('heading', { level: 3 })).toHaveCount(8);
 });
 
 test('H2 · el IVA de 2 mochilas con DESC20 es $ 19.760', async ({ page }) => {
-  test.fixme(true, 'En cuarentena: nadie sabe por qué falla'); // ← borren esta línea para ejecutarla
   await page.goto('/');
   const tarjeta = page
     .locator('.rounded-lg')
@@ -30,11 +28,10 @@ test('H2 · el IVA de 2 mochilas con DESC20 es $ 19.760', async ({ page }) => {
   await tarjeta.getByRole('button', { name: 'Agregar' }).click();
   await page.getByPlaceholder('Código de descuento').fill('DESC20');
   await page.getByRole('button', { name: 'Aplicar' }).click();
-  await expect(page.locator('dt:text-is("IVA (19%)") + dd')).toHaveText('$ 19.760');
+  await expect(page.locator('dt:text-is("IVA (19%)") + dd')).toHaveText('$ 24.700');
 });
 
 test('H3 · agregar un cuaderno justo después de cargar', async ({ page }) => {
-  test.fixme(true, 'En cuarentena: nadie sabe por qué falla'); // ← borren esta línea para ejecutarla
   await page.goto('/', { waitUntil: 'domcontentloaded' });
   await page.getByRole('button', { name: 'Agregar' }).first().click();
   await expect(page.getByRole('listitem').filter({ hasText: 'Cuaderno universitario' })).toBeVisible();

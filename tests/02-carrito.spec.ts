@@ -158,7 +158,6 @@ test.describe("US-06 · Disminuir la cantidad desde el carrito", () => {
       .filter({ has: page.getByRole("heading", { name: "Carrito" }) });
 
     const linea = carrito.getByRole("listitem").filter({ hasText: "Cuaderno universitario" });
-    console.log("Linea antes " + linea.locator("span"));
   
     await tarjeta.getByRole("spinbutton").fill("1");
     await tarjeta.getByRole("button", { name: "Agregar" }).click();

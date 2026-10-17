@@ -36,6 +36,7 @@ test.describe("US-09 · Aplicar un código de descuento", () => {
     { data: "Desc10", bug: "LBH51" },
     { data: "DESC10", bug: "" },
   ];
+  
   for (const { data, bug } of variantes) {
     test(`CA3: El código ${data} se reconocen igual que DESC10`, async ({
       page,

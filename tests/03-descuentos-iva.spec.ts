@@ -115,7 +115,6 @@ test.describe("US-12 · Ver el total a pagar correcto", () => {
     const totalEsperado = ((subtotal - descuento) + IVA).toLocaleString("es-CO");
 
     await expect(totalLocator).toContainText(totalEsperado);
-    // Nivel 3 · CAZABUGS. Mismo oráculo que US-11, ahora sobre la fila "Total".
-    // Pregunta para el reporte: este bug y el de US-11 CA2, ¿son el mismo? ¿Cuántos bugs hay en Jira?
+
   });
 });
